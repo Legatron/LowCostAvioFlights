@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace LowCostAvioFlights.Domain
+namespace LowCostAvioFlights.Models
 {
-    public class FlightSearchParameters
+    public class FlightSearchParametersDto
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string OriginLocationCode { get; set; }
         public string DestinationLocationCode { get; set; }
@@ -18,20 +17,21 @@ namespace LowCostAvioFlights.Domain
         [MaxLength]
         public string? JsonResponseFlightSearchPayload { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public DateTime? Updated { get; set; }
         [ConcurrencyCheck]
         public string SearchHashCode { get; set; }
-        public SearchStatus SearchStatus { get; set; }
+        //public SearchStatus SearchStatus { get; set; }
 
         [NotMapped]
         public string DBError { get; set; }
     }
 
-    public enum SearchStatus
-    {
-        Complete,
-        InProgress,
-        Error
-    }
+    //public enum SearchStatus
+    //{
+    //    Complete,
+    //    InProgress,
+    //    Error
+    //}
 }

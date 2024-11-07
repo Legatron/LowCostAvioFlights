@@ -1,5 +1,6 @@
 using LowCostAvioFlights.Data;
 using LowCostAvioFlights.Infrastructure;
+using LowCostAvioFlights.Mappings;
 using LowCostAvioFlights.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,7 @@ builder.Services.AddDbContext<LowCostAvioFlightsDbContext>(options =>
 
 builder.Services.AddTransient<ILowCostAvioFlightsDbContext, LowCostAvioFlightsDbContext>();
 builder.Services.AddTransient<IFlightSearchParametersRepository, FlightSearchParametersRepository>();
+builder.Services.AddAutoMapper(typeof(FlightSearchParametersMappingProfile));
 
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();

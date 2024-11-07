@@ -1,36 +1,46 @@
-﻿using LowCostAvioFlights.Data;
+﻿using AutoMapper;
+using LowCostAvioFlights.Data;
 using LowCostAvioFlights.Domain;
+using LowCostAvioFlights.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace LowCostAvioFlights.Repositories
 {
     public class FlightSearchParametersRepository : IFlightSearchParametersRepository
     {
         private readonly LowCostAvioFlightsDbContext _context;
+        private readonly IMapper _mapper;
 
-        public FlightSearchParametersRepository(ILowCostAvioFlightsDbContext context)
+        public FlightSearchParametersRepository(ILowCostAvioFlightsDbContext context, IMapper mapper)
         {
             _context = (LowCostAvioFlightsDbContext)context;
+            _mapper = mapper;
         }
 
-        public async Task<FlightSearchParameters> GetFlightSearchParametersAsync(int id)
+        public async Task<FlightSearchParametersDto> GetFlightSearchParametersAsync(int id)
         {
-            return await _context.FlightSearchParameters.FindAsync(id);
+            var flightSearchParameters = await _context.FlightSearchParameters.FindAsync(id);
+            return flightSearchParameters == null ? null : _mapper.Map<FlightSearchParametersDto>(flightSearchParameters);
         }
 
-        public async Task<IEnumerable<FlightSearchParameters>> GetFlightSearchParametersAsync()
+        public async Task<IEnumerable<FlightSearchParametersDto>> GetFlightSearchParametersAsync()
         {
-            return await _context.FlightSearchParameters.ToListAsync();
+            var flightSearchParameters = await _context.FlightSearchParameters.ToListAsync();
+            return flightSearchParameters
+                .Select(flightSearchParameter => _mapper.Map<FlightSearchParametersDto>(flightSearchParameter));
         }
 
-        public async Task CreateFlightSearchParametersAsync(FlightSearchParameters flightSearchParameters)
+        public async Task CreateFlightSearchParametersAsync(FlightSearchParametersDto flightSearchParametersDto)
         {
+            var flightSearchParameters = _mapper.Map<FlightSearchParameters>(flightSearchParametersDto);
             _context.FlightSearchParameters.Add(flightSearchParameters);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateFlightSearchParametersAsync(FlightSearchParameters flightSearchParameters)
+        public async Task UpdateFlightSearchParametersAsync(FlightSearchParametersDto flightSearchParametersDto)
         {
+            var flightSearchParameters = _mapper.Map<FlightSearchParameters>(flightSearchParametersDto);
             _context.FlightSearchParameters.Update(flightSearchParameters);
             await _context.SaveChangesAsync();
         }

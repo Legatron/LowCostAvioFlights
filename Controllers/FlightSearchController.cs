@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using LowCostAvioFlights.Repositories;
 
 namespace LowCostAvioFlights.Controllers
 {
@@ -14,22 +15,24 @@ namespace LowCostAvioFlights.Controllers
         private readonly ILogger<FlightSearchController> _logger;
         private readonly AmadeusOAuthClient _oauthClient;
         private readonly HttpClient _httpClient;
+        private readonly IFlightSearchParametersRepository _repository;
 
-        public FlightSearchController(ILogger<FlightSearchController> logger, AmadeusOAuthClient oauthClient, HttpClient httpClient)
+        public FlightSearchController(ILogger<FlightSearchController> logger, AmadeusOAuthClient oauthClient, HttpClient httpClient, IFlightSearchParametersRepository repository)
         {
             _logger = logger;
             _oauthClient = oauthClient;
             _httpClient = httpClient;
+            _repository = repository;
         }
 
         [HttpPost]
         public async Task<IActionResult> SearchFlights([FromBody] FlightSearchParameters parameters)
         {
             var accessToken = await _oauthClient.GetAccessTokenAsync();
-            var amadeusResponse = await MakeAmadeusApiCallAsync(accessToken, parameters);
+            //var amadeusResponse = await MakeAmadeusApiCallAsync(accessToken, parameters);
             // Use the access token to make the API call to Amadeus
             // ...
-
+            var dbflightssearch = await _repository.GetFlightSearchParametersAsync();
             return StatusCode(StatusCodes.Status200OK);
         }
 
