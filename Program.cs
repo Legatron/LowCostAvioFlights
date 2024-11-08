@@ -11,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<AmadeusApiSettings>(builder.Configuration.GetSection("AmadeusApiSettings"));
 
 builder.Services.AddDbContext<LowCostAvioFlightsDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("FlightSearch")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("FlightSearchDB")));
 
 builder.Services.AddTransient<ILowCostAvioFlightsDbContext, LowCostAvioFlightsDbContext>();
 builder.Services.AddTransient<IFlightSearchParametersRepository, FlightSearchParametersRepository>();
