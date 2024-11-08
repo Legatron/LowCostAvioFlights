@@ -2,6 +2,7 @@ using LowCostAvioFlights.Data;
 using LowCostAvioFlights.Infrastructure;
 using LowCostAvioFlights.Mappings;
 using LowCostAvioFlights.Repositories;
+using LowCostAvioFlights.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,7 +20,10 @@ builder.Services.AddAutoMapper(typeof(FlightSearchParametersMappingProfile));
 
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();
+
 builder.Services.AddTransient<AmadeusOAuthClient>();
+builder.Services.AddTransient<FlightSearchService>();
+builder.Services.AddTransient<AmadeusApiClientService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
