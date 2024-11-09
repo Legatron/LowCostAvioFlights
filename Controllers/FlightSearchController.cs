@@ -1,14 +1,10 @@
-﻿using LowCostAvioFlights.Domain;
-using LowCostAvioFlights.Infrastructure;
+﻿using LowCostAvioFlights.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System.Net.Http.Headers;
-using System.Net.Http;
 using LowCostAvioFlights.Repositories;
 using Microsoft.Extensions.Options;
 using LowCostAvioFlights.Models;
 using LowCostAvioFlights.Services;
-using Azure;
+
 
 namespace LowCostAvioFlights.Controllers
 {
@@ -17,19 +13,17 @@ namespace LowCostAvioFlights.Controllers
     public class FlightSearchController : ControllerBase
     {
         private readonly ILogger<FlightSearchController> _logger;
-        private readonly AmadeusOAuthClient _oauthClient;
-        private readonly HttpClient _httpClient;
+        private readonly IAmadeusOAuthClient _oauthClient;
         private readonly IFlightSearchParametersRepository _repository;
         private readonly IOptions<AmadeusApiSettings> _apiSettings;
-        private readonly FlightSearchService _flightSearchService;
-        private readonly AmadeusApiClientService _amadeusApiClientService;
-        public FlightSearchController(ILogger<FlightSearchController> logger, AmadeusOAuthClient oauthClient, HttpClient httpClient,
-            IFlightSearchParametersRepository repository, IOptions<AmadeusApiSettings> amadeusApiSettings, 
-            FlightSearchService flightSearchService, AmadeusApiClientService amadeusApiClientService)
+        private readonly IFlightSearchService _flightSearchService;
+        private readonly IAmadeusApiClientService _amadeusApiClientService;
+        public FlightSearchController(ILogger<FlightSearchController> logger, IAmadeusOAuthClient oauthClient,
+            IFlightSearchParametersRepository repository, IOptions<AmadeusApiSettings> amadeusApiSettings,
+            IFlightSearchService flightSearchService, IAmadeusApiClientService amadeusApiClientService)
         {
             _logger = logger;
             _oauthClient = oauthClient;
-            _httpClient = httpClient;
             _repository = repository;
             _apiSettings = amadeusApiSettings;
             _flightSearchService = flightSearchService;

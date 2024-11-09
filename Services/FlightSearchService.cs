@@ -6,7 +6,7 @@ using static LowCostAvioFlights.Controllers.FlightSearchController;
 
 namespace LowCostAvioFlights.Services
 {
-    public class FlightSearchService
+    public class FlightSearchService: IFlightSearchService
     {
         private readonly IFlightSearchParametersRepository _repository;
         public FlightSearchService(IFlightSearchParametersRepository repository)

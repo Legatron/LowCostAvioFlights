@@ -4,7 +4,7 @@ using LowCostAvioFlights.Services;
 
 namespace LowCostAvioFlights.Infrastructure
 {
-    public class AmadeusOAuthClient
+    public class AmadeusOAuthClient: IAmadeusOAuthClient
     {
         private readonly IOptions<AmadeusApiSettings> _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;

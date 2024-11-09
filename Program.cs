@@ -23,9 +23,9 @@ builder.Services.AddControllers();
 builder.Services.AddHttpClient();
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddTransient<AmadeusOAuthClient>();
-builder.Services.AddTransient<FlightSearchService>();
-builder.Services.AddTransient<AmadeusApiClientService>();
+builder.Services.AddTransient<IAmadeusOAuthClient, AmadeusOAuthClient>();
+builder.Services.AddTransient<IFlightSearchService, FlightSearchService>();
+builder.Services.AddTransient<IAmadeusApiClientService, AmadeusApiClientService>();
 builder.Services.AddTransient<ITokenCacheService, TokenCacheService>();
 
 

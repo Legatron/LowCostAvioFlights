@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 
 namespace LowCostAvioFlights.Services
 {
-    public class AmadeusApiClientService
+    public class AmadeusApiClientService: IAmadeusApiClientService
     {
         private readonly IOptions<AmadeusApiSettings> _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
