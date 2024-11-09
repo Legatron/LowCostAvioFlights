@@ -16,7 +16,7 @@ namespace LowCostAvioFlights.Services
             _apiSettings = apiSettings;
             _httpClientFactory = httpClientFactory;
         }
-        public async Task<HttpResponseMessage> MakeApiCallAsync(string accessToken, FlightSearchParametersDto parameters)
+        public async Task<HttpResponseMessage> GetFlightsAsync(string accessToken, FlightSearchParametersDto parameters)
         {
             if (string.IsNullOrEmpty(accessToken))
             {

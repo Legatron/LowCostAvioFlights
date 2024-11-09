@@ -10,5 +10,6 @@
         public string EndpointFlightOffer { get; set; }
         public string EndpointAIATAAirport { get; set; }
         public string EndpointAIATAAirportSetings { get; set; }
+        public string CacheDuratrionForTokenMinuts { get; set; }
     }
 }

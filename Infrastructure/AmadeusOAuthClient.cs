@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using System.Text;
+using LowCostAvioFlights.Services;
 
 namespace LowCostAvioFlights.Infrastructure
 {
@@ -8,14 +8,23 @@ namespace LowCostAvioFlights.Infrastructure
     {
         private readonly IOptions<AmadeusApiSettings> _apiSettings;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ITokenCacheService _tokenCacheService;
 
-        public AmadeusOAuthClient(IOptions<AmadeusApiSettings> apiSettings, IHttpClientFactory httpClientFactory)
+        public AmadeusOAuthClient(IOptions<AmadeusApiSettings> apiSettings, IHttpClientFactory httpClientFactory, 
+             ITokenCacheService tokenCacheService)
         {
             _apiSettings = apiSettings;
             _httpClientFactory = httpClientFactory;
+            _tokenCacheService = tokenCacheService;
         }
         public async Task<string> GetAccessTokenAsync()
         {
+            var cachedToken = await _tokenCacheService.GetCachedTokenAsync();
+            if (cachedToken != null)
+            {
+                return cachedToken;
+            }
+
             var _httpClient = _httpClientFactory.CreateClient();
             var request = new HttpRequestMessage(HttpMethod.Post, _apiSettings.Value.OauthTokenHttps)
             {
@@ -27,12 +36,14 @@ namespace LowCostAvioFlights.Infrastructure
             await using var stream = await response.Content.ReadAsStreamAsync();
             var oauthResults = await System.Text.Json.JsonSerializer.DeserializeAsync<TokenResponse>(stream);
 
-            var x = oauthResults.access_token;
-            var responseBody = await response.Content.ReadAsStringAsync();
-            var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseBody);
+            if (double.TryParse(_apiSettings.Value.CacheDuratrionForTokenMinuts, out double cacheDuration))
+            {
+                await _tokenCacheService.CacheTokenAsync(oauthResults.access_token, TimeSpan.FromMinutes(cacheDuration));
+            }
 
-            return tokenResponse.access_token;
+            return oauthResults.access_token;
         }
+
     }
 
     public class TokenResponse

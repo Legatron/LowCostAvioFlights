@@ -42,14 +42,15 @@ namespace LowCostAvioFlights.Controllers
             try
             {
                 var accessToken = await _oauthClient.GetAccessTokenAsync();
+
                 parameters.OriginLocationCode = "RDU";
                 parameters.DestinationLocationCode = "MUC";
                 parameters.Adults = 1;
-                parameters.DepartureDate = "2024-11-08";
+                parameters.DepartureDate = "2024-11-09";
                 parameters.ReturnDate = "2024-11-10";
                 parameters.CurrencyCode = "EUR";
 
-                var amadeusResponse = await _amadeusApiClientService.MakeApiCallAsync(accessToken, parameters);
+                var amadeusResponse = await _amadeusApiClientService.GetFlightsAsync(accessToken, parameters);
                 amadeusResponse.EnsureSuccessStatusCode();
 
                 var responseBody = await amadeusResponse.Content.ReadAsStringAsync();
