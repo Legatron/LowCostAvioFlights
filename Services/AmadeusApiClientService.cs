@@ -2,7 +2,9 @@
 using LowCostAvioFlights.Infrastructure;
 using LowCostAvioFlights.Models;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.Net.Http.Headers;
+using System.Text;
 
 
 namespace LowCostAvioFlights.Services
@@ -36,8 +38,22 @@ namespace LowCostAvioFlights.Services
         }
         private string BuildQueryString(FlightSearchParametersDto parameters)
         {
-            var queryString = $"originLocationCode={parameters.OriginLocationCode}&destinationLocationCode={parameters.DestinationLocationCode}&departureDate={parameters.DepartureDate}&returnDate={parameters.ReturnDate}&adults={parameters.Adults}&children={parameters.Children}&infants={parameters.Infants}";
-            return queryString;
+            var queryString = new StringBuilder();
+
+            queryString.Append($"originLocationCode={parameters.OriginLocationCode}");
+            queryString.Append($"&destinationLocationCode={parameters.DestinationLocationCode}");
+            queryString.Append($"&departureDate={parameters.DepartureDate}");
+
+            if (!parameters.ReturnDate.IsNullOrEmpty())
+            {
+                queryString.Append($"&returnDate={parameters.ReturnDate}");
+            }
+
+            queryString.Append($"&adults={parameters.Adults}");
+            queryString.Append($"&children={parameters.Children}");
+            queryString.Append($"&infants={parameters.Infants}");
+            
+            return queryString.ToString();
         }
     }
 

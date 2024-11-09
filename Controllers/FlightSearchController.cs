@@ -4,6 +4,7 @@ using LowCostAvioFlights.Repositories;
 using Microsoft.Extensions.Options;
 using LowCostAvioFlights.Models;
 using LowCostAvioFlights.Services;
+using LowCostAvioFlights.Validators;
 
 
 namespace LowCostAvioFlights.Controllers
@@ -33,15 +34,27 @@ namespace LowCostAvioFlights.Controllers
         [HttpPost]
         public async Task<IActionResult> SearchFlights([FromBody] FlightSearchParametersDto parameters)
         {
+            var validator = new FlightSearchParametersDtoValidator();
+            var validationResult = validator.Validate(parameters);
+
+            if (!validationResult.IsValid)
+            {
+                var errorMessage = validationResult.Errors.FirstOrDefault(e => e.PropertyName == "DepartureDate")?.ErrorMessage;
+                if (errorMessage == null || errorMessage != null)
+                {
+                    errorMessage = "Please enter a departure date that is on or after today.";
+                }
+                return BadRequest(new { error = errorMessage });
+            }
             try
             {
                 var accessToken = await _oauthClient.GetAccessTokenAsync();
-
+                parameters.DepartureDate = "2024-11-09";
                 parameters.OriginLocationCode = "RDU";
                 parameters.DestinationLocationCode = "MUC";
                 parameters.Adults = 1;
-                parameters.DepartureDate = "2024-11-09";
-                parameters.ReturnDate = "2024-11-10";
+                
+                parameters.ReturnDate = null;
                 parameters.CurrencyCode = "EUR";
 
                 var amadeusResponse = await _amadeusApiClientService.GetFlightsAsync(accessToken, parameters);

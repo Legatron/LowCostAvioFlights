@@ -40,6 +40,7 @@ namespace LowCostAvioFlights.Models
         /// <summary>
         /// Number of adults, e.g. 1
         /// </summary>
+        [RegularExpression(@"^[1-9]\d*$", ErrorMessage = "Please enter a positive integer value for Adults >= 1.")]
         public required int Adults { get; set; }
 
         /// <summary>
