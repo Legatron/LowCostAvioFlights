@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Swashbuckle.AspNetCore.Annotations;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace LowCostAvioFlights.Models
@@ -17,6 +18,7 @@ namespace LowCostAvioFlights.Models
         /// </summary>
         [StringLength(3, MinimumLength = 3)]
         [Required]
+        [DefaultValue("MUC")]
         public required string OriginLocationCode { get; set; }
 
         /// <summary>
@@ -24,23 +26,28 @@ namespace LowCostAvioFlights.Models
         /// </summary>
         [StringLength(3, MinimumLength = 3)]
         [Required]
+        [DefaultValue("RDU")]
         public required string DestinationLocationCode { get; set; }
 
         /// <summary>
         /// Departure date, e.g. 2024-11-08
         /// </summary>
         [Required]
+        [DefaultValue("yyyy-MM-dd")]
         public required string DepartureDate { get; set; }
 
         /// <summary>
         /// Return date, e.g. 2024-11-10
         /// </summary>
+        [RegularExpression(@"^\d{4}-\d{2}-\d{2}$|^$", ErrorMessage = "Please leave it empty or >= DepartureDate")]
+        [DefaultValue("")]
         public string? ReturnDate { get; set; }
 
         /// <summary>
         /// Number of adults, e.g. 1
         /// </summary>
         [RegularExpression(@"^[1-9]\d*$", ErrorMessage = "Please enter a positive integer value for Adults >= 1.")]
+        [DefaultValue("1")]
         public required int Adults { get; set; }
 
         /// <summary>
@@ -58,6 +65,7 @@ namespace LowCostAvioFlights.Models
         /// </summary>
         [Required]
         [StringLength(3, MinimumLength = 3)]
+        [DefaultValue("EUR")]
         public required string CurrencyCode { get; set; }
 
         [SwaggerIgnore]

@@ -13,12 +13,12 @@ namespace LowCostAvioFlights.Services
         {
             _repository = repository;
         }
-        public async Task<AmadeusResponse> SaveSearchParametersAndResponseAsync(FlightSearchParametersDto parameters, string responseBody)
+        public async Task<FlightOffersResponse> SaveSearchParametersAndResponseAsync(FlightSearchParametersDto parameters, string responseBody)
         {
             parameters.JsonResponseFlightSearchPayload = responseBody;
             await _repository.CreateFlightSearchParametersAsync(parameters);
 
-            return JsonConvert.DeserializeObject<AmadeusResponse>(responseBody);
+            return JsonConvert.DeserializeObject<FlightOffersResponse>(responseBody);
         }
     }
 }

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using LowCostAvioFlights.Models;
 using LowCostAvioFlights.Services;
 using LowCostAvioFlights.Validators;
+using Swashbuckle.AspNetCore.Annotations;
 
 
 namespace LowCostAvioFlights.Controllers
@@ -32,6 +33,7 @@ namespace LowCostAvioFlights.Controllers
         }
 
         [HttpPost]
+        //[SwaggerResponse(200, typeof(List<FlightOffer>), "Flight offers")]
         public async Task<IActionResult> SearchFlights([FromBody] FlightSearchParametersDto parameters)
         {
             var validator = new FlightSearchParametersDtoValidator();
@@ -42,20 +44,21 @@ namespace LowCostAvioFlights.Controllers
                 var errorMessage = validationResult.Errors.FirstOrDefault(e => e.PropertyName == "DepartureDate")?.ErrorMessage;
                 if (errorMessage == null || errorMessage != null)
                 {
-                    errorMessage = "Please enter a departure date that is on or after today.";
+                    errorMessage = "Please enter a departure date that is on or after today. e.g. yyyy-MM-dd";
                 }
                 return BadRequest(new { error = errorMessage });
             }
+
             try
             {
                 var accessToken = await _oauthClient.GetAccessTokenAsync();
-                parameters.DepartureDate = "2024-11-09";
-                parameters.OriginLocationCode = "RDU";
-                parameters.DestinationLocationCode = "MUC";
-                parameters.Adults = 1;
+                //parameters.DepartureDate = "2024-11-09";
+                //parameters.OriginLocationCode = "RDU";
+                //parameters.DestinationLocationCode = "MUC";
+                //parameters.Adults = 1;
                 
-                parameters.ReturnDate = null;
-                parameters.CurrencyCode = "EUR";
+                //parameters.ReturnDate = "";
+                //parameters.CurrencyCode = "EUR";
 
                 var amadeusResponse = await _amadeusApiClientService.GetFlightsAsync(accessToken, parameters);
                 amadeusResponse.EnsureSuccessStatusCode();
@@ -63,8 +66,7 @@ namespace LowCostAvioFlights.Controllers
                 var responseBody = await amadeusResponse.Content.ReadAsStringAsync();
 
                 return Ok(await _flightSearchService.SaveSearchParametersAndResponseAsync(parameters, responseBody));
-                //var dbflightssearch = await _repository.GetFlightSearchParametersAsync();
-                //return StatusCode(StatusCodes.Status200OK);
+
             }
             catch (Exception ex)
             {
@@ -74,21 +76,6 @@ namespace LowCostAvioFlights.Controllers
             }
         }
 
-        public class AmadeusResponse
-        {
-            public List<FlightOffer> FlightOffers { get; set; }
-        }
-
-        public class FlightOffer
-        {
-            public string Id { get; set; }
-            public string DepartureAirport { get; set; }
-            public string ArrivalAirport { get; set; }
-            public DateTime DepartureDate { get; set; }
-            public DateTime ArrivalDate { get; set; }
-            public decimal Price { get; set; }
-            public string Data { get; set; }
-        }
     }
 
 }

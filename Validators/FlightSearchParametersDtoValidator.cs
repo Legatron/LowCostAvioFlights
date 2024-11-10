@@ -9,10 +9,10 @@ namespace LowCostAvioFlights.Validators
         {
             RuleFor(x => x.OriginLocationCode).NotEmpty();
             RuleFor(x => x.DestinationLocationCode).NotEmpty();
-            RuleFor(x => x.DepartureDate).NotEmpty().Must(BeAfterToday);
+            RuleFor(x => x.DepartureDate).NotEmpty().Must(BeTodayOrAfter);
         }
 
-        private bool BeAfterToday(string date)
+        private bool BeTodayOrAfter(string date)
         {
             if (DateTime.TryParse(date, out DateTime parsedDate))
             {

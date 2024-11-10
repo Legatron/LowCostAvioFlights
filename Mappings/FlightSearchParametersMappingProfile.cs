@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using LowCostAvioFlights.Domain;
 using LowCostAvioFlights.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
+
 
 namespace LowCostAvioFlights.Mappings
 {
@@ -9,8 +11,11 @@ namespace LowCostAvioFlights.Mappings
     {
         public FlightSearchParametersMappingProfile()
         {
-            CreateMap<FlightSearchParameters, FlightSearchParametersDto>();
-            CreateMap<FlightSearchParametersDto, FlightSearchParameters>();
+            CreateMap<FlightSearchParameters, FlightSearchParametersDto>()
+            .ForMember(dest => dest.ReturnDate, opt => opt.MapFrom(src => src.ReturnDate.HasValue ? src.ReturnDate.Value.ToString() : null));
+
+            CreateMap<FlightSearchParametersDto, FlightSearchParameters>()
+            .ForMember(dest => dest.ReturnDate, opt => opt.MapFrom(src => src.ReturnDate.IsNullOrEmpty() ? null : src.ReturnDate.ToString() ));
         }
     }
 }
