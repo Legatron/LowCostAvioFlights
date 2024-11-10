@@ -30,6 +30,11 @@ namespace LowCostAvioFlights.Services
            return await _repository.GetFlightOffersResponseBySearchHashCodeAsync(searchHashCode);
         }
 
+        public async Task<FlightOffersResponse> GetLastFlightOffersServiceAsync(string last)
+        {
+            return await _repository.GetLastSerchedFlightOfferAsync(last);
+        }
+
 
     }
 }

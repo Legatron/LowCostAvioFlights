@@ -7,5 +7,6 @@ namespace LowCostAvioFlights.Services
     {
         Task<FlightOffersResponse> SaveSearchParametersAndResponseAsync(FlightSearchParametersDto parameters, HttpContent responseContent);
         Task<FlightOffersResponse> GetFlightOffersResponseBySearchHashCodeServiceAsync(string searchHashCode);
+        Task<FlightOffersResponse> GetLastFlightOffersServiceAsync(string last);
     }
 }

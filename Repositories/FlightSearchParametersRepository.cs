@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LowCostAvioFlights.Controllers;
 using LowCostAvioFlights.Data;
 using LowCostAvioFlights.Domain;
 using LowCostAvioFlights.Models;
@@ -11,11 +12,13 @@ namespace LowCostAvioFlights.Repositories
     {
         private readonly LowCostAvioFlightsDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<FlightSearchParametersRepository> _logger;
 
-        public FlightSearchParametersRepository(ILowCostAvioFlightsDbContext context, IMapper mapper)
+        public FlightSearchParametersRepository(ILowCostAvioFlightsDbContext context, IMapper mapper, ILogger<FlightSearchParametersRepository> logger)
         {
             _context = (LowCostAvioFlightsDbContext)context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<FlightSearchParametersDto> GetFlightSearchParametersAsync(int id)
@@ -72,7 +75,30 @@ namespace LowCostAvioFlights.Repositories
             }
             catch (Exception ex)
             {
-                //_logger.LogError(ex, "Error getting flight offers response by search hash code");
+                _logger.LogError(ex, "Error getting flight offers response by search hash code");
+                return null;
+            }
+        }
+
+        public async Task<FlightOffersResponse> GetLastSerchedFlightOfferAsync(string last)
+        {
+            try
+            {
+                var flightSearchParameters = await _context.FlightSearchParameters
+                            .FirstOrDefaultAsync(fd => fd.JsonResponseFlightSearchPayload != null);
+
+                if (flightSearchParameters != null)
+                {
+                    var jsonResponseFlightSearchPayload = flightSearchParameters.JsonResponseFlightSearchPayload;
+                    var flightOffersResponse = JsonConvert.DeserializeObject<FlightOffersResponse>(jsonResponseFlightSearchPayload);
+                    return flightOffersResponse;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting last flight offer");
                 return null;
             }
         }

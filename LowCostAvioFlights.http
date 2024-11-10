@@ -1,6 +1,6 @@
 @LowCostAvioFlights_HostAddress = http://localhost:5089
 
-GET {{LowCostAvioFlights_HostAddress}}/weatherforecast/
+GET {{LowCostAvioFlights_HostAddress}}/FlightSearch/
 Accept: application/json
 
 ###

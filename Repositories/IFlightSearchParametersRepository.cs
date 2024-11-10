@@ -12,5 +12,6 @@ namespace LowCostAvioFlights.Repositories
         Task UpdateFlightSearchParametersAsync(FlightSearchParametersDto flightSearchParameters);
         Task DeleteFlightSearchParametersAsync(int id);
         Task<FlightOffersResponse> GetFlightOffersResponseBySearchHashCodeAsync(string searchHashCode);
+        Task<FlightOffersResponse> GetLastSerchedFlightOfferAsync(string last);
     }
 }

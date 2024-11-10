@@ -52,7 +52,8 @@ namespace LowCostAvioFlights.Services
             queryString.Append($"&adults={parameters.Adults}");
             queryString.Append($"&children={parameters.Children}");
             queryString.Append($"&infants={parameters.Infants}");
-            
+            queryString.Append($"&max=10");
+
             return queryString.ToString();
         }
     }

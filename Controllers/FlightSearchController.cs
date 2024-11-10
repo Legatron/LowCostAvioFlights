@@ -37,7 +37,6 @@ namespace LowCostAvioFlights.Controllers
         }
 
         [HttpPost]
-        //[SwaggerResponse(200, typeof(List<FlightOffer>), "Flight offers")]
         public async Task<IActionResult> SearchFlights([FromBody] FlightSearchParametersDto parameters)
         {
             var validator = new FlightSearchParametersDtoValidator();
@@ -89,6 +88,23 @@ namespace LowCostAvioFlights.Controllers
                 _logger.LogError(ex.Message, ex);
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpGet(Name = "GetSerchedFlights")]
+        public async Task<IActionResult> Get()
+        {
+            try
+            {
+                var cachedResult = await _flightSearchService.GetLastFlightOffersServiceAsync("");
+                return Ok(cachedResult);
+            }
+            catch (Exception ex)
+            {
+                // Handle any other exceptions
+                _logger.LogError(ex.Message, ex);
+                return StatusCode(500, ex.Message);
+            }
+
         }
 
     }
