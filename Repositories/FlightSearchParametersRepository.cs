@@ -3,7 +3,7 @@ using LowCostAvioFlights.Data;
 using LowCostAvioFlights.Domain;
 using LowCostAvioFlights.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using Newtonsoft.Json;
 
 namespace LowCostAvioFlights.Repositories
 {
@@ -31,7 +31,7 @@ namespace LowCostAvioFlights.Repositories
                 .Select(flightSearchParameter => _mapper.Map<FlightSearchParametersDto>(flightSearchParameter));
         }
 
-        public async Task CreateFlightSearchParametersAsync(FlightSearchParametersDto flightSearchParametersDto)
+        public async Task SaveFlightSearchParametersAndResultAsync(FlightSearchParametersDto flightSearchParametersDto)
         {
             var flightSearchParameters = _mapper.Map<FlightSearchParameters>(flightSearchParametersDto);
             _context.FlightSearchParameters.Add(flightSearchParameters);
@@ -52,6 +52,28 @@ namespace LowCostAvioFlights.Repositories
             {
                 _context.FlightSearchParameters.Remove(flightSearchParameters);
                 await _context.SaveChangesAsync();
+            }
+        }
+        public async Task<FlightOffersResponse> GetFlightOffersResponseBySearchHashCodeAsync(string searchHashCode)
+        {
+            try
+            {
+                var flightSearchParameters = await _context.FlightSearchParameters
+                    .FirstOrDefaultAsync(fsp => fsp.SearchHashCode == searchHashCode);
+
+                if (flightSearchParameters != null)
+                {
+                    var jsonResponseFlightSearchPayload = flightSearchParameters.JsonResponseFlightSearchPayload;
+                    var flightOffersResponse = JsonConvert.DeserializeObject<FlightOffersResponse>(jsonResponseFlightSearchPayload);
+                    return flightOffersResponse;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                //_logger.LogError(ex, "Error getting flight offers response by search hash code");
+                return null;
             }
         }
     }

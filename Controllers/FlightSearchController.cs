@@ -6,6 +6,8 @@ using LowCostAvioFlights.Models;
 using LowCostAvioFlights.Services;
 using LowCostAvioFlights.Validators;
 using Swashbuckle.AspNetCore.Annotations;
+using Newtonsoft.Json;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace LowCostAvioFlights.Controllers
@@ -20,9 +22,10 @@ namespace LowCostAvioFlights.Controllers
         private readonly IOptions<AmadeusApiSettings> _apiSettings;
         private readonly IFlightSearchService _flightSearchService;
         private readonly IAmadeusApiClientService _amadeusApiClientService;
+        private readonly IHashService _hashService;
         public FlightSearchController(ILogger<FlightSearchController> logger, IAmadeusOAuthClient oauthClient,
             IFlightSearchParametersRepository repository, IOptions<AmadeusApiSettings> amadeusApiSettings,
-            IFlightSearchService flightSearchService, IAmadeusApiClientService amadeusApiClientService)
+            IFlightSearchService flightSearchService, IAmadeusApiClientService amadeusApiClientService, IHashService hashService)
         {
             _logger = logger;
             _oauthClient = oauthClient;
@@ -30,6 +33,7 @@ namespace LowCostAvioFlights.Controllers
             _apiSettings = amadeusApiSettings;
             _flightSearchService = flightSearchService;
             _amadeusApiClientService = amadeusApiClientService;
+            _hashService = hashService;
         }
 
         [HttpPost]
@@ -44,10 +48,20 @@ namespace LowCostAvioFlights.Controllers
                 var errorMessage = validationResult.Errors.FirstOrDefault(e => e.PropertyName == "DepartureDate")?.ErrorMessage;
                 if (errorMessage == null || errorMessage != null)
                 {
-                    errorMessage = "Please enter a departure date that is on or after today. e.g. yyyy-MM-dd";
+                    errorMessage = "Please enter a departure date that is on or after today. e.g. " + DateTime.Today.Date.ToString("yyyy-MM-dd");
                 }
                 return BadRequest(new { error = errorMessage });
             }
+
+            //prvo provjeri da li je već dohvaćeno
+            var hash = _hashService.CreateHash(parameters);
+            var cachedResult = await _flightSearchService.GetFlightOffersResponseBySearchHashCodeServiceAsync(hash);
+            if (cachedResult != null)
+            {
+                return Ok(cachedResult);
+            }
+
+            parameters.SearchHashCode = hash;
 
             try
             {
@@ -63,9 +77,10 @@ namespace LowCostAvioFlights.Controllers
                 var amadeusResponse = await _amadeusApiClientService.GetFlightsAsync(accessToken, parameters);
                 amadeusResponse.EnsureSuccessStatusCode();
 
-                var responseBody = await amadeusResponse.Content.ReadAsStringAsync();
+                var flightOffersResponse = await _flightSearchService.SaveSearchParametersAndResponseAsync(parameters, amadeusResponse.Content);
 
-                return Ok(await _flightSearchService.SaveSearchParametersAndResponseAsync(parameters, responseBody));
+                return Ok(flightOffersResponse);
+               
 
             }
             catch (Exception ex)

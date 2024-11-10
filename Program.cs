@@ -27,6 +27,7 @@ builder.Services.AddTransient<IAmadeusOAuthClient, AmadeusOAuthClient>();
 builder.Services.AddTransient<IFlightSearchService, FlightSearchService>();
 builder.Services.AddTransient<IAmadeusApiClientService, AmadeusApiClientService>();
 builder.Services.AddTransient<ITokenCacheService, TokenCacheService>();
+builder.Services.AddTransient<IHashService, HashService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -1,6 +1,7 @@
 ﻿using LowCostAvioFlights.Domain;
 using LowCostAvioFlights.Models;
 using LowCostAvioFlights.Repositories;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using static LowCostAvioFlights.Controllers.FlightSearchController;
 
@@ -13,12 +14,22 @@ namespace LowCostAvioFlights.Services
         {
             _repository = repository;
         }
-        public async Task<FlightOffersResponse> SaveSearchParametersAndResponseAsync(FlightSearchParametersDto parameters, string responseBody)
+        public async Task<FlightOffersResponse> SaveSearchParametersAndResponseAsync(FlightSearchParametersDto parameters, HttpContent responseContent)
         {
-            parameters.JsonResponseFlightSearchPayload = responseBody;
-            await _repository.CreateFlightSearchParametersAsync(parameters);
+            var stream = await responseContent.ReadAsStreamAsync();
+            var responseBody = await new StreamReader(stream).ReadToEndAsync();
+            var flightOffersResponse = JsonConvert.DeserializeObject<FlightOffersResponse>(responseBody);
 
-            return JsonConvert.DeserializeObject<FlightOffersResponse>(responseBody);
+            parameters.JsonResponseFlightSearchPayload = responseBody;
+            await _repository.SaveFlightSearchParametersAndResultAsync(parameters).ConfigureAwait(false);
+
+            return flightOffersResponse;
         }
+        public async Task<FlightOffersResponse> GetFlightOffersResponseBySearchHashCodeServiceAsync(string searchHashCode)
+        {
+           return await _repository.GetFlightOffersResponseBySearchHashCodeAsync(searchHashCode);
+        }
+
+
     }
 }

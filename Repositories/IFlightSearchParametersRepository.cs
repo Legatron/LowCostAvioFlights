@@ -8,8 +8,9 @@ namespace LowCostAvioFlights.Repositories
     {
         Task<FlightSearchParametersDto> GetFlightSearchParametersAsync(int id);
         Task<IEnumerable<FlightSearchParametersDto>> GetFlightSearchParametersAsync();
-        Task CreateFlightSearchParametersAsync(FlightSearchParametersDto flightSearchParameters);
+        Task SaveFlightSearchParametersAndResultAsync(FlightSearchParametersDto flightSearchParameters);
         Task UpdateFlightSearchParametersAsync(FlightSearchParametersDto flightSearchParameters);
         Task DeleteFlightSearchParametersAsync(int id);
+        Task<FlightOffersResponse> GetFlightOffersResponseBySearchHashCodeAsync(string searchHashCode);
     }
 }

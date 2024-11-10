@@ -21,8 +21,7 @@ namespace LowCostAvioFlights.Domain
         public DateTime Created { get; set; } = DateTime.UtcNow;
         public DateTime? Updated { get; set; }
         [ConcurrencyCheck]
-        [NotMapped]
-        public string SearchHashCode { get; set; }
+        public string? SearchHashCode { get; set; }
         [NotMapped]
         public SearchStatus SearchStatus { get; set; }
 
