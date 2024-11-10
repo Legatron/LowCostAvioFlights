@@ -1,9 +1,8 @@
-﻿using LowCostAvioFlights.Domain;
+﻿
 using LowCostAvioFlights.Models;
 using LowCostAvioFlights.Repositories;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using static LowCostAvioFlights.Controllers.FlightSearchController;
+
 
 namespace LowCostAvioFlights.Services
 {

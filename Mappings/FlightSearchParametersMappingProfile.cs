@@ -2,7 +2,6 @@
 using LowCostAvioFlights.Domain;
 using LowCostAvioFlights.Models;
 using Microsoft.IdentityModel.Tokens;
-using System.Globalization;
 
 
 namespace LowCostAvioFlights.Mappings

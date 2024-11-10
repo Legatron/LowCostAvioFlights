@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using LowCostAvioFlights.Controllers;
 using LowCostAvioFlights.Data;
 using LowCostAvioFlights.Domain;
 using LowCostAvioFlights.Models;

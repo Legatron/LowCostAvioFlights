@@ -5,9 +5,6 @@ using Microsoft.Extensions.Options;
 using LowCostAvioFlights.Models;
 using LowCostAvioFlights.Services;
 using LowCostAvioFlights.Validators;
-using Swashbuckle.AspNetCore.Annotations;
-using Newtonsoft.Json;
-using Microsoft.EntityFrameworkCore;
 
 
 namespace LowCostAvioFlights.Controllers
@@ -65,13 +62,6 @@ namespace LowCostAvioFlights.Controllers
             try
             {
                 var accessToken = await _oauthClient.GetAccessTokenAsync();
-                //parameters.DepartureDate = "2024-11-09";
-                //parameters.OriginLocationCode = "RDU";
-                //parameters.DestinationLocationCode = "MUC";
-                //parameters.Adults = 1;
-                
-                //parameters.ReturnDate = "";
-                //parameters.CurrencyCode = "EUR";
 
                 var amadeusResponse = await _amadeusApiClientService.GetFlightsAsync(accessToken, parameters);
                 amadeusResponse.EnsureSuccessStatusCode();
@@ -84,7 +74,6 @@ namespace LowCostAvioFlights.Controllers
             }
             catch (Exception ex)
             {
-                // Handle any other exceptions
                 _logger.LogError(ex.Message, ex);
                 return StatusCode(500, ex.Message);
             }
@@ -100,7 +89,6 @@ namespace LowCostAvioFlights.Controllers
             }
             catch (Exception ex)
             {
-                // Handle any other exceptions
                 _logger.LogError(ex.Message, ex);
                 return StatusCode(500, ex.Message);
             }

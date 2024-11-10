@@ -1,5 +1,4 @@
 ﻿using LowCostAvioFlights.Models;
-using static LowCostAvioFlights.Controllers.FlightSearchController;
 
 namespace LowCostAvioFlights.Services
 {

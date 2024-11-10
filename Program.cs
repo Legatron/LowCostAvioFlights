@@ -4,7 +4,6 @@ using LowCostAvioFlights.Mappings;
 using LowCostAvioFlights.Repositories;
 using LowCostAvioFlights.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
